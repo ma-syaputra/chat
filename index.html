@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My First Node App</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+
+
+<div class="container">
+    <br>
+    <button id="choice1" class="btn btn-primary">Choice 1</button>
+    <button id="choice2" class="btn btn-success">Choice 2</button>
+    <div class="jumbotron">
+        <h1 class="display-4">Send Message</h1>
+        <br>
+        <input id = "name" class="form-control" placeholder="Name">
+        <br>
+        <textarea id = "message" class="form-control" placeholder="Your Message Here"></textarea>
+        <br>
+        <button id="send" class="btn btn-success">Send</button>
+    </div>
+    <div id="messages">
+
+    </div>
+</div>
+<script>
+   var socket = io();
+    $(() => {
+        $("#send").click(()=>{
+            sendMessage({name: $("#name").val(), message: $("#message").val()});
+        })
+
+        getMessages()
+    })
+
+    var socket = io();
+    $(() => {
+        $("#choice1").click(()=>{
+            var choice = '1';
+            var id_choice = '1';
+            var id_user = '1';
+            sendChocice1({id_choice:id_choice, choice: choice,id_user:id_user});
+        })
+
+    })
+    var socket = io();
+    $(() => {
+        $("#choice2").click(()=>{
+            var choice = '2';
+            var id_choice = '2';
+            var id_user = '1';
+            sendChocice2({id_choice:id_choice, choice: choice,id_user:id_user});
+        })
+
+    })
+
+    socket.on('message', addMessages)
+
+    function addMessages(message){
+        $("#messages").append(`<h4> ${message.name} </h4> <p> ${message.message} </p>`)
+    }
+
+    function getMessages(){
+      $.get('http://localhost:3001/messages', (data) => {
+        data.forEach(addMessages);
+      })
+    }
+    function sendChocice1(data1){
+      $.post('http://localhost:3001/sendChoice1', data1)
+    }
+    function sendChocice2(data2){
+      $.post('http://localhost:3001/sendChoice2', data2)
+    }
+
+    function sendMessage(message){
+      $.post('http://localhost:3001/messages', message)
+    }
+</script>
+</body>
+</html>
